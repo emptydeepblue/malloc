@@ -1,16 +1,12 @@
-# Prerequisites
-*.d
+# .gitignore for malloc project
+# 42 Norms
+subject*
 
-# Object files
+# Compiled Object files
 *.o
-*.ko
 *.obj
+*.ko
 *.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
 
 # Precompiled Headers
 *.gch
@@ -35,6 +31,7 @@
 *.i*86
 *.x86_64
 *.hex
+a.out
 
 # Debug files
 *.dSYM/
@@ -42,14 +39,26 @@
 *.idb
 *.pdb
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+# Object directory
+obj/
 
-# debug information files
-*.dwo
+# Build artifacts
+libft_malloc*.so
+libft_malloc.so
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Test files
+test
+test_*
+tests/output/
+
+# Core dumps
+core
+vgcore.*
