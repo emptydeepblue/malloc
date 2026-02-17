@@ -6,7 +6,7 @@
 /*   By: everonel <everonel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 00:00:00 by emma              #+#    #+#             */
-/*   Updated: 2026/02/17 17:02:00 by everonel         ###   ########.fr       */
+/*   Updated: 2026/02/17 17:51:11 by everonel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ void	show_alloc_mem(void);
 /*
 ** Internal helper functions (not exposed in the public API)
 */
-size_t align_size(size_t size);
-t_zone *find_or_create_zone(t_zone_type type, size_t size);
+size_t  align_size(size_t size);
+t_zone  *find_or_create_zone(t_zone_type type, size_t size);
 t_block *find_suitable_block(t_zone *zone, size_t size);
-t_zone *create_zone(t_zone_type type, size_t size);
-void split_block(t_block *block, size_t size);
+t_zone  *create_zone(t_zone_type type, size_t size);
+void    split_block(t_block *block, size_t size);
 #endif
