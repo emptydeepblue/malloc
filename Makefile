@@ -68,7 +68,9 @@ fclean: clean
 re: fclean all
 
 test: all
+	@echo "$(YELLOW)Compiling test.c...$(RESET)"
+	@gcc -o test test.c -L. -lft_malloc -lpthread
 	@echo "$(YELLOW)Running tests...$(RESET)"
-	@./test.sh
+	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so ./test
 
 .PHONY: all clean fclean re test
