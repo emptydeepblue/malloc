@@ -6,7 +6,7 @@
 /*   By: everonel <everonel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 00:00:00 by emma              #+#    #+#             */
-/*   Updated: 2026/02/17 17:01:39 by everonel         ###   ########.fr       */
+/*   Updated: 2026/02/19 19:51:42 by everonel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,10 +92,12 @@ t_zone *create_zone(t_zone_type type, size_t size) {
 	if (type == LARGE) {
 		new_zone->blocks->size = size;
 		new_zone->blocks->free = 0;
+		new_zone->blocks->prev = NULL;
 	} else {
 		size_t available_size = zone_size - (blocks_addr - (uintptr_t)zone_start) - sizeof(t_block);
 		new_zone->blocks->size = available_size;
 		new_zone->blocks->free = 1;
+		new_zone->blocks->prev = NULL;
 	}
 	new_zone->blocks->next = NULL;
 	new_zone->next = g_zones;
@@ -108,7 +110,9 @@ void split_block(t_block *block, size_t size) {
 		t_block *new_block = (t_block*)((char*)block + sizeof(t_block) + size);
 		new_block->size = block->size - size - sizeof(t_block);
 		new_block->free = 1;
+		new_block->prev = block;
 		new_block->next = block->next;
+		if (block->next) block->next->prev = new_block;
 		block->size = size;
 		block->next = new_block;
 	}

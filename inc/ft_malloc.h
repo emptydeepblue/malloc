@@ -6,18 +6,17 @@
 /*   By: everonel <everonel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 00:00:00 by emma              #+#    #+#             */
-/*   Updated: 2026/02/17 17:51:11 by everonel         ###   ########.fr       */
+/*   Updated: 2026/02/19 20:55:27 by everonel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_MALLOC_H
 # define FT_MALLOC_H
 
-# include <stdlib.h>
-# include <unistd.h>
 # include <sys/mman.h>
-# include <stdint.h>
 # include <pthread.h>
+# include <stdint.h>
+# include "libft.h"
 
 /*
 ** Constants
@@ -45,6 +44,7 @@ typedef struct s_block
 {
     size_t          size;
     int             free;
+    struct s_block  *prev;
     struct s_block  *next;
 }	t_block;
 
@@ -83,4 +83,6 @@ t_zone  *find_or_create_zone(t_zone_type type, size_t size);
 t_block *find_suitable_block(t_zone *zone, size_t size);
 t_zone  *create_zone(t_zone_type type, size_t size);
 void    split_block(t_block *block, size_t size);
+t_zone *find_zone_containing_block(t_block *block);
+void    merge_adjacent_free_blocks(t_block *block);
 #endif
