@@ -91,6 +91,95 @@ void test_double_free() {
     TEST_PASS("Double free handled (no crash)");
 }
 
+void test_realloc() {
+    TEST_START("Realloc functionality");
+    void *p1 = malloc(50);
+    CHECK_ALLOC(p1, "malloc(50)");
+    TEST_PASS("Initial allocation done");
+    
+    // Realloc to smaller size
+    void *p2 = realloc(p1, 30);
+    if (p2) {
+        TEST_PASS("Realloc to smaller size succeeded: %p", p2);
+    } else {
+        TEST_FAIL("Realloc to smaller size failed");
+        return;
+    }
+    
+    // Realloc to larger size
+    void *p3 = realloc(p2, 100);
+    if (p3) {
+        TEST_PASS("Realloc to larger size succeeded: %p", p3);
+    } else {
+        TEST_FAIL("Realloc to larger size failed");
+        return;
+    }
+    
+    // Realloc with NULL
+    void *p4 = realloc(NULL, 20);
+    if (p4) {
+        TEST_PASS("Realloc with NULL succeeded: %p", p4);
+    } else {
+        TEST_FAIL("Realloc with NULL failed");
+        return;
+    }
+    
+    // Realloc with size 0
+    void *p5 = realloc(p4, 0);
+    if (!p5) {
+        TEST_PASS("Realloc with size 0 returned NULL");
+    } else {
+        TEST_FAIL("Realloc with size 0 should return NULL");
+    }
+    
+    free(p3);
+    TEST_PASS("Realloc tests completed");
+}
+
+void *thread_test(void *arg) {
+    (void)arg;
+    for (int i = 0; i < 100; i++) {
+        void *ptr = malloc(64);
+        if (ptr) {
+            memset(ptr, 0xAA, 64);
+            free(ptr);
+        }
+        ptr = malloc(128);
+        if (ptr) {
+            void *new_ptr = realloc(ptr, 256);
+            if (new_ptr) {
+                memset(new_ptr, 0xBB, 256);
+                free(new_ptr);
+            } else {
+                free(ptr);
+            }
+        }
+    }
+    return NULL;
+}
+
+void test_thread_safety() {
+    TEST_START("Thread safety");
+    const int num_threads = 4;
+    pthread_t threads[num_threads];
+    
+    for (int i = 0; i < num_threads; i++) {
+        if (pthread_create(&threads[i], NULL, thread_test, NULL) != 0) {
+            TEST_FAIL("Failed to create thread %d", i);
+            return;
+        }
+    }
+    
+    for (int i = 0; i < num_threads; i++) {
+        if (pthread_join(threads[i], NULL) != 0) {
+            TEST_FAIL("Failed to join thread %d", i);
+            return;
+        }
+    }
+    
+    TEST_PASS("All threads completed without issues");
+}
+
 void test_show_alloc_mem() {
     TEST_START("show_alloc_mem with multiple allocations");
     void *p1 = malloc(42);
@@ -114,7 +203,8 @@ int main() {
     test_tiny_small_large();
     test_free();
     test_double_free();
-
+    test_realloc();
+    test_thread_safety();
     test_show_alloc_mem();
     printf("\n=== All malloc tests completed ===\n");
     return 0;
