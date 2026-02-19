@@ -6,11 +6,17 @@
 /*   By: everonel <everonel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 00:00:00 by emma              #+#    #+#             */
-/*   Updated: 2026/02/19 19:51:42 by everonel         ###   ########.fr       */
+/*   Updated: 2026/02/19 22:46:04 by everonel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
+
+/*
+** Global variables (allowed: one for allocations, one for mutex)
+*/
+t_zone *g_zones = NULL;
+pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void	*malloc(size_t size) {
 	if (size == 0) return (NULL);

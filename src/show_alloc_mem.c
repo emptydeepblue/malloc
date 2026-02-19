@@ -6,7 +6,7 @@
 /*   By: everonel <everonel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 00:00:00 by emma              #+#    #+#             */
-/*   Updated: 2026/02/19 20:55:08 by everonel         ###   ########.fr       */
+/*   Updated: 2026/02/19 22:23:02 by everonel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void print_hex(unsigned long long addr) {
 }
 
 void show_alloc_mem(void) {
+    pthread_mutex_lock(&g_mutex);
     t_zone *zone = g_zones;
     size_t total = 0;
     while (zone) {
@@ -81,4 +82,5 @@ void show_alloc_mem(void) {
     }
     for (int i = len - 1; i >= 0; i--) write(1, &num[i], 1);
     write(1, " bytes\n", 7);
+    pthread_mutex_unlock(&g_mutex);
 }
