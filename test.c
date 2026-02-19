@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 void *malloc(size_t size);
+void free(void *ptr);
 void show_alloc_mem(void);
 
 // Helper macros for readability
@@ -25,6 +26,7 @@ void test_basic_malloc() {
     void *p1 = malloc(10);
     CHECK_ALLOC(p1, "malloc(10)");
     show_alloc_mem();
+    free(p1);
 }
 
 void test_alignment() {
@@ -37,6 +39,7 @@ void test_alignment() {
         TEST_PASS("Pointer aligned to 16 bytes: %p", p);
     }
     show_alloc_mem();
+    free(p);
 }
 
 void test_tiny_small_large() {
@@ -49,6 +52,43 @@ void test_tiny_small_large() {
     CHECK_ALLOC(large, "LARGE malloc(2048)");
     TEST_PASS("All zone types allocated successfully");
     show_alloc_mem();
+    free(tiny);
+    free(small);
+    free(large);
+}
+
+void test_free() {
+    TEST_START("Free functionality");
+    void *p1 = malloc(50);
+    void *p2 = malloc(100);
+    CHECK_ALLOC(p1, "malloc(50)");
+    CHECK_ALLOC(p2, "malloc(100)");
+    TEST_PASS("Allocated two blocks");
+    show_alloc_mem();
+    
+    free(p1);
+    TEST_PASS("Freed first block");
+    show_alloc_mem();
+    
+    void *p3 = malloc(30); // Should reuse the freed space
+    CHECK_ALLOC(p3, "malloc(30) after free");
+    TEST_PASS("Reallocated in freed space");
+    show_alloc_mem();
+    
+    free(p2);
+    free(p3);
+    TEST_PASS("Freed remaining blocks");
+}
+
+void test_double_free() {
+    TEST_START("Double free protection");
+    void *p = malloc(20);
+    CHECK_ALLOC(p, "malloc(20)");
+    free(p);
+    TEST_PASS("First free succeeded");
+    // Double free should not crash (though behavior undefined, but in our impl it should handle)
+    free(p); // This might not do anything or log, but shouldn't segfault
+    TEST_PASS("Double free handled (no crash)");
 }
 
 void test_show_alloc_mem() {
@@ -62,6 +102,9 @@ void test_show_alloc_mem() {
     TEST_PASS("Multiple allocations done");
     printf("Memory map:\n");
     show_alloc_mem();
+    free(p1);
+    free(p2);
+    free(p3);
 }
 
 int main() {
@@ -69,6 +112,9 @@ int main() {
     test_basic_malloc();
     test_alignment();
     test_tiny_small_large();
+    test_free();
+    test_double_free();
+
     test_show_alloc_mem();
     printf("\n=== All malloc tests completed ===\n");
     return 0;

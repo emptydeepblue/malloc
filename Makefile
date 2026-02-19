@@ -62,7 +62,7 @@ clean:
 
 fclean: clean
 	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@rm -f $(NAME) $(LINK)
+	@rm -f $(NAME) $(LINK) test
 	@echo "$(RED)✗ $(NAME) and $(LINK) removed$(RESET)"
 
 re: fclean all
@@ -73,4 +73,19 @@ test: all
 	@echo "$(YELLOW)Running tests...$(RESET)"
 	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so ./test
 
-.PHONY: all clean fclean re test
+vtest: all
+	@echo "$(YELLOW)Compiling vtest.c...$(RESET)"
+	@gcc -o test test.c -L. -lft_malloc -lpthread
+	@echo "$(YELLOW)Running valgrind tests...$(RESET)"
+	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so valgrind --leak-check=full --track-origins=yes ./test
+	@echo "$(YELLOW)NOTE: Valgrind will affect the show_alloc_mem output due to its instrumentation. Focus on memory leaks and errors reported.$(RESET)"
+	@echo "$(YELLOW)NOTE2: 1 error in 1 context is expected for the double free test. Focus on other errors.$(RESET)"
+
+htest: all
+	@echo "$(YELLOW)Compiling htest.c...$(RESET)"
+	@gcc -o test test.c -L. -lft_malloc -lpthread
+	@echo "$(YELLOW)Running helgrind tests...$(RESET)"
+	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so valgrind --tool=helgrind --track-lockorders=yes ./test
+	@echo "$(YELLOW)NOTE: Helgrind will affect the show_alloc_mem output due to its instrumentation. Focus on thread safety issues reported.$(RESET)" 
+
+.PHONY: all clean fclean re test vtest htest
