@@ -1,38 +1,50 @@
-# malloc
+# ft_malloc - Custom Dynamic Memory Allocator
 
-A custom implementation of dynamic memory allocation functions.
+A 42 School project implementing `malloc`, `free`, and `realloc` using `mmap`/`munmap` with optimized TINY/SMALL/LARGE zones.
 
-## Description
+## Features
+- ✅ Thread-safe with POSIX mutexes
+- ✅ 16-byte memory alignment
+- ✅ Zone-based allocation for performance
+- ✅ No libc malloc dependency
+- ✅ Comprehensive testing
 
-This project implements `malloc()`, `free()`, and `realloc()` using `mmap()` and `munmap()` system calls, with memory zones optimized for different allocation sizes (TINY, SMALL, LARGE).
-
-## Build
-
+## Build & Test
 ```bash
-make
+make          # Build library
+make test     # Run tests
+make vtest    # Valgrind memory check
+make htest    # Helgrind thread check
 ```
 
 ## Usage
-
 ```bash
 export LD_PRELOAD=./libft_malloc.so
 ./your_program
 ```
 
-## Functions
-
-- `void *malloc(size_t size)` - Allocate memory
-- `void free(void *ptr)` - Free allocated memory
-- `void *realloc(void *ptr, size_t size)` - Reallocate memory
-- `void show_alloc_mem()` - Display memory allocations
-
 ## Project Structure
+```
+├── inc/ft_malloc.h    # Header
+├── src/
+│   ├── malloc.c      # Core allocation + globals
+│   ├── free.c        # Deallocation
+│   ├── realloc.c     # Reallocation
+│   └── show_alloc_mem.c # Memory display
+├── libft/            # 42 libft
+├── docs/             # Documentation
+├── test.c            # Tests
+└── Makefile          # Build config
+```
 
-```
-.
-├── inc/       # Header files
-├── src/           # Source files
-├── libft/         # libft library
-├── Makefile       # Build configuration
-└── README.md      # This file
-```
+## Zones
+- **TINY**: ≤64 bytes, 4MB zones
+- **SMALL**: 65-1024 bytes, 8MB zones
+- **LARGE**: >1024 bytes, direct mmap
+
+## Documentation
+See `docs/` for technical details.
+
+---
+
+*42 School Project - Dynamic Memory Allocation*
