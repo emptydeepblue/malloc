@@ -6,38 +6,30 @@
 /*   By: everonel <everonel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/23 00:00:00 by emma              #+#    #+#             */
-/*   Updated: 2026/02/17 16:53:28 by everonel         ###   ########.fr       */
+/*   Updated: 2026/02/19 20:55:08 by everonel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malloc.h"
-#include <unistd.h>  // For write
 
 // Helper to print hex address (simple implementation)
 void print_hex(unsigned long long addr) {
-    char buf[19];  // 0x + 16 hex + \0
-    int i = 17;
-    buf[18] = '\0';
-    buf[0] = '0';
-    buf[1] = 'x';
-    if (addr == 0) {
-        buf[2] = '0';
-        buf[3] = '\0';
-        write(1, buf, 3);
-        return;
+    char buffer[20];
+    int i = 0;
+    const char *hex = "0123456789abcdef";
+
+    buffer[i++] = '0';
+    buffer[i++] = 'x';
+    for (int shift = (sizeof(addr) * 8) - 4; shift >= 0; shift -= 4) {
+        buffer[i++] = hex[(addr >> shift) & 0xF];
     }
-    while (addr > 0 && i > 1) {
-        int digit = addr % 16;
-        buf[i--] = (digit < 10) ? '0' + digit : 'a' + (digit - 10);
-        addr /= 16;
-    }
-    write(1, buf + i + 1, 18 - i);
+    buffer[i] = '\0';
+    write(1, buffer, i);
 }
 
 void show_alloc_mem(void) {
-    pthread_mutex_lock(&g_mutex);
-    size_t total = 0;
     t_zone *zone = g_zones;
+    size_t total = 0;
     while (zone) {
         if (zone->type == TINY) {
             write(1, "TINY : ", 7);
@@ -61,7 +53,7 @@ void show_alloc_mem(void) {
                 write(1, " - ", 3);
                 print_hex((unsigned long long)end);
                 write(1, " : ", 3);
-                // Print size (use ft_putnbr_fd from libft if available, else simple loop)
+                // Print size
                 char num[20];
                 int len = 0;
                 size_t n = block->size;
@@ -89,5 +81,4 @@ void show_alloc_mem(void) {
     }
     for (int i = len - 1; i >= 0; i--) write(1, &num[i], 1);
     write(1, " bytes\n", 7);
-    pthread_mutex_unlock(&g_mutex);
 }
