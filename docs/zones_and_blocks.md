@@ -6,8 +6,8 @@ In this custom `malloc` implementation, memory is managed using **zones** and **
 ## What are Zones?
 Zones are large, pre-allocated memory regions obtained via `mmap(2)`. They group allocations by size to reduce overhead:
 - **TINY Zone**: For small allocations (1-64 bytes). Size: 4MB (page-aligned), holds ~100+ allocations.
-- **SMALL Zone**: For medium allocations (65-512 bytes). Size: 8MB, holds ~100+ allocations.
-- **LARGE Zone**: For big allocations (>512 bytes). Each is a separate zone (direct `mmap`), sized exactly to the allocation + overhead.
+- **SMALL Zone**: For medium allocations (65-1024 bytes). Size: 8MB, holds ~100+ allocations.
+- **LARGE Zone**: For big allocations (>1024 bytes). Each is a separate zone (direct `mmap`), sized exactly to the allocation + overhead.
 
 ### Why Zones?
 - **Performance**: Reusing zones avoids frequent `mmap` calls (expensive). TINY/SMALL zones are "pre-allocated" pools.
@@ -58,5 +58,5 @@ Blocks are subdivisions within a zone, representing individual allocations or fr
 - `malloc(1000)` (LARGE): Creates new LARGE zone with one 1000-byte block.
 
 ### Constants
-- `TINY_MAX = 64`, `SMALL_MAX = 512`
+- `TINY_MAX = 64`, `SMALL_MAX = 1024`
 - `TINY_ZONE_SIZE = 4 * 1024 * 1024`, `SMALL_ZONE_SIZE = 8 * 1024 * 1024`

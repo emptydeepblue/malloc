@@ -11,7 +11,7 @@ This document provides an overview of the `ft_malloc` project, a custom implemen
 - **Constants**:
   - `ALIGNMENT = 16`
   - `TINY_MAX = 64`
-  - `SMALL_MAX = 512`
+  - `SMALL_MAX = 1024`
   - `TINY_ZONE_SIZE = 4MB`
   - `SMALL_ZONE_SIZE = 8MB` (page-aligned)
 
