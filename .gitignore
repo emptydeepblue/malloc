@@ -1,64 +1,10 @@
-# .gitignore for malloc project
-# 42 Norms
-subject*
+# Exclude proprietary 42 School materials from public distribution
+# en.subject.pdf
 
-# Compiled Object files
-*.o
-*.obj
-*.ko
-*.elf
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-a.out
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Object directory
-obj/
-
-# Build artifacts
+# Ignore the compiled binary and object files
 libft_malloc*.so
 libft_malloc.so
+obj/
 
-# Editor/IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Test files
-test
-test_*
-tests/output/
-
-# Core dumps
-core
-vgcore.*
+# Ignore test binaries
+*-test

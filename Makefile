@@ -62,30 +62,33 @@ clean:
 
 fclean: clean
 	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@rm -f $(NAME) $(LINK) test
+	@rm -f $(NAME) $(LINK)
 	@echo "$(RED)✗ $(NAME) and $(LINK) removed$(RESET)"
 
 re: fclean all
 
 test: all
-	@echo "$(YELLOW)Compiling test.c...$(RESET)"
-	@gcc -o test test.c -L. -lft_malloc -lpthread
+	@echo "$(YELLOW)Compiling test/test.base.c...$(RESET)"
+	@gcc -o base-test test/test.base.c -L. -lft_malloc -lpthread
 	@echo "$(YELLOW)Running tests...$(RESET)"
-	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so ./test
+	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so ./base-test
+	@rm -f base-test
 
 vtest: all
-	@echo "$(YELLOW)Compiling vtest.c...$(RESET)"
-	@gcc -o test test.c -L. -lft_malloc -lpthread
+	@echo "$(YELLOW)Compiling test/test.base.c...$(RESET)"
+	@gcc -o valgrind-test test/test.base.c -L. -lft_malloc -lpthread
 	@echo "$(YELLOW)Running valgrind tests...$(RESET)"
-	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so valgrind --leak-check=full --track-origins=yes ./test
+	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so valgrind --leak-check=full --track-origins=yes ./valgrind-test
 	@echo "$(YELLOW)NOTE: Valgrind will affect the show_alloc_mem output due to its instrumentation. Focus on memory leaks and errors reported.$(RESET)"
 	@echo "$(YELLOW)NOTE2: 1 error in 1 context is expected for the double free test. Focus on other errors.$(RESET)"
+	@rm -f valgrind-test
 
 htest: all
-	@echo "$(YELLOW)Compiling htest.c...$(RESET)"
-	@gcc -o test test.c -L. -lft_malloc -lpthread
+	@echo "$(YELLOW)Compiling test/test.base.c...$(RESET)"
+	@gcc -o helgrind-test test/test.base.c -L. -lft_malloc -lpthread
 	@echo "$(YELLOW)Running helgrind tests...$(RESET)"
-	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so valgrind --tool=helgrind --track-lockorders=yes ./test
+	@export LD_LIBRARY_PATH=. && LD_PRELOAD=./libft_malloc.so valgrind --tool=helgrind --track-lockorders=yes ./helgrind-test
 	@echo "$(YELLOW)NOTE: Helgrind will affect the show_alloc_mem output due to its instrumentation. Focus on thread safety issues reported.$(RESET)" 
+	@rm -f helgrind-test
 
 .PHONY: all clean fclean re test vtest htest
