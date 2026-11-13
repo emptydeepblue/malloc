@@ -18,6 +18,8 @@ void *realloc(void *ptr, size_t size) {
         free(ptr);
         return NULL;
     }
+    if (size > SIZE_MAX - ALIGNMENT)
+        return NULL;
     size = align_size(size);
     pthread_mutex_lock(&g_mutex);
     t_block *block = (t_block*)((char*)ptr - sizeof(t_block));

@@ -19,7 +19,7 @@ t_zone *g_zones = NULL;
 pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void	*malloc(size_t size) {
-	if (size == 0) return (NULL);
+	if (size == 0 || size > SIZE_MAX - ALIGNMENT) return (NULL);
 	t_zone_type zone_type;
 	t_zone 		*zone;
 	t_block 	*block;
@@ -76,6 +76,8 @@ t_block *find_suitable_block(t_zone *zone, size_t size) {
 
 t_zone *create_zone(t_zone_type type, size_t size) {
 	size_t 	page_size = sysconf(_SC_PAGESIZE);
+	if (type == LARGE && size > SIZE_MAX - sizeof(t_zone) - sizeof(t_block) - ALIGNMENT - page_size)
+		return (NULL);
     size_t 	zone_size = (type == TINY) ? TINY_ZONE_SIZE : (type == SMALL) ? SMALL_ZONE_SIZE : ((size + sizeof(t_zone) + sizeof(t_block) + page_size - 1) / page_size) * page_size;
     void 	*zone_start = mmap(NULL, zone_size, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
 	if (zone_start == MAP_FAILED) return (NULL);

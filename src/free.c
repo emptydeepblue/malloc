@@ -18,7 +18,7 @@ void free(void *ptr) {
     pthread_mutex_lock(&g_mutex);
     t_block *block = (t_block*)((char*)ptr - sizeof(t_block));
     t_zone *zone = find_zone_containing_block(block);
-    if (!zone) {
+    if (!zone || block->free) {
         pthread_mutex_unlock(&g_mutex);
         return;
     }
