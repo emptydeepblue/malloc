@@ -1,5 +1,6 @@
 # Exclude proprietary 42 School materials from public distribution
-# en.subject.pdf
+*.subject.pdf
+docs/*.pdf
 
 # Ignore the compiled binary and object files
 libft_malloc*.so
