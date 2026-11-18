@@ -3,7 +3,7 @@
 A custom dynamic memory allocator (`malloc`, `free`, `realloc`, `show_alloc_mem`) built directly on `mmap` / `munmap`, with TINY / SMALL / LARGE zones for performance and POSIX mutexes for thread safety.
 
 **Specialization:** Unix/Kernel
-**XP:** 9,450 · **People:** 1 · **Status:** 🟦 Completed
+**XP:** 9,450 · **People:** 1 · **Status:** ✅ Validated
 
 ---
 
